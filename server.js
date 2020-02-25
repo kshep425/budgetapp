@@ -1,7 +1,7 @@
 const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
-const compress = require("compression");
+const compression = require("compression");
 
 const PORT = process.env.PORT || 3000;
 
@@ -17,7 +17,8 @@ const DB = process.env.DB || "mongodb://localhost/budget"
 
 dbOptions = {
     useNewUrlParser: true,
-    useFindAndModify: false
+    useFindAndModify: false,
+    useUnifiedTopology: true
 }
 mongoose.connect(DB, dbOptions);
 
