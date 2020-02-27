@@ -7,6 +7,9 @@
         <link href="assets/css/style.css" rel="stylesheet">
     </head>
     <body>
+        <h1>Budget Tracker</h1>
+        <p>"Track your spending, even when you are offline! (PWA)</p>
+        <br>
         <form>
             <field>
                 <label>Description</label>
@@ -20,18 +23,16 @@
                 Submit
             </button>
         </form>
-
+        <h2>Expenses</h2>
         <table>
             <thead>
-                <td>Description</td>
-                <td>Cost</td>
+                <td><strong>Description</strong></td>
+                <td><strong>Cost</strong></td>
             </thead>
-            <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                </tr>
+            <tbody id="table_expenses">
+
             </tbody>
         </table>
+        <script src="assets/js/index.js"></script>
     </body>
 </html>
