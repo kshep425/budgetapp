@@ -1,4 +1,12 @@
+
+
+body {
+    background-image: url("../images/art-background-blue-design-268415.jpg");
+    background-color: lightskyblue;
+    text-align: center;
+}
+
 .error {
     color: red
-    
+
 }
