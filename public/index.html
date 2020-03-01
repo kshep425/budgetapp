@@ -1,51 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Budget App</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="Description" content=Use this budget app to track your expenses!">
-        <link href="/fontawesome/css/all.css" rel="stylesheet">
-        <link href="assets/css/style.css" rel="stylesheet">
-        <link rel="manifest" href="manifest.webmanifest" />
+
+<head>
+    <title>Budget App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="Description" content=Use this budget app to track your expenses!">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <link href="/fontawesome/css/all.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="./assets/images/favicon.ico" type="image/x-icon" />
-    </head>
-    <body>
-        <img alt="Budget Tracker" src="assets/images/BudgetApp.png">
-        <p>"Track your spending, even when you are offline! (PWA)</p>
-        <br>
-        <form>
-            <p id="error" class="error"></p>
-            <p id="success"></p>
-            <field>
-                <label>Description
+</head>
 
-                    <input type="text" id="form_description" required>
-                </label>
-            </field>
-            <field>
-                <label>Cost
+<body>
+    <div id=full_div class="container bg-light">
 
-                    <input type="text" id="form_cost" required>
-                </label>
-            </field>
-            <button id="form_submit" type="submit">
-                Submit
-            </button>
-        </form>
-        <h2>Total Expenses: <span id="total_disp"></span></h2>
+        <img alt="Budget Tracker" src="assets/images/BudgetApp.png" class="mx-auto d-block">
+        <div class="my-2">
+
+            <p class="text-primary text-center">"Track your spending, even when you are offline! (PWA)</p>
+        </div>
+
+        <h2>Total Expenses: $<span id="total_disp"></span></h2>
+
+        <div class="mx-auto d-block">
+
+            <form class="mx-auto d-block">
+                <p class=" text-center"><span id="error" class="error"></span><span id="success"></span></p>
+                <field>
+                    <label>Description
+                        <input type="text" id="form_description" required>
+                    </label>
+                </field>
+                <field>
+                    <label>Cost
+                        <input type="text" id="form_cost" required>
+                    </label>
+                </field>
+                <button id="form_submit" type="submit">
+                    Submit
+                </button>
+            </form>
+        </div>
         <h2>Expenses</h2>
-        <table>
-            <thead>
-                <td><strong>Description</strong></td>
-                <td><strong>Cost</strong></td>
-            </thead>
-            <tbody id="table_expenses">
+        <div class="container">
 
-            </tbody>
-        </table>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="/assets/js/indexeddb.js"></script>
-        <script src="/assets/js/index.js"></script>
-    </body>
+            <table class="table">
+                <thead>
+                    <td><strong>Description</strong></td>
+                    <td><strong>Cost</strong></td>
+                </thead>
+                <tbody id="table_expenses">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/assets/js/indexeddb.js"></script>
+    <script src="/assets/js/index.js"></script>
+</body>
+
 </html>
