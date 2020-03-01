@@ -36,7 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 }
 
+                const message = `Added: '${description} $${cost}' `
 
+                document.getElementById("success").textContent = message
                 tran_num++
 
                 return res
@@ -63,12 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (transactions) {
             transactions.forEach((transaction) => {
                 console.log(transaction)
-
-                const message = `add ${transaction._id}${transaction.idb}: ${transaction.description} and ${transaction.cost} to table`
-
-                document.getElementById("success").textContent = message
-
-                console.log(message)
 
                 var table_row = document.createElement("tr")
                 var col_description = document.createElement("td")
