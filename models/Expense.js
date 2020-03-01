@@ -17,6 +17,10 @@ const expensesSchema = new Schema({
         ],
         min: [.01, "Cost has to be more than 0"],
 
+    },
+    date: {
+        type: Date,
+        default: Date.now
     }
 })
 

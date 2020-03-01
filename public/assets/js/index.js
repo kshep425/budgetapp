@@ -7,14 +7,35 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("form_submit").addEventListener("click", async (event) => {
         event.preventDefault()
         document.getElementById("error").textContent = ""
+        document.getElementById("success").textContent = ""
         console.log("Form submitted")
-
-        add_to_db(form_description.value || "desc_" + tran_num, form_cost.value || tran_num)
+        const description = form_description.value || "desc_" + tran_num
+        const cost = form_cost.value || tran_num
+        add_to_db(description, cost)
             .then((res) => {
-                console.log("expense added to mongo db")
+                console.log("expense added to db")
                 console.log(res)
+                const transaction = [{
+                    _id: "",
+                    idb: "",
+                    description: description,
+                    cost: cost
+                }]
+                console.log(navigator.onLine)
+                if (navigator.onLine) {
+                    transaction[0]._id = res._id
+                    console.log(transaction._id)
+                    update_page()
+                } else {
+                    console.log(res)
+                    transaction[0].idb = res
+                    console.log(transaction.idb)
+                    add_to_table(transaction)
+                    let total = document.getElementById("total_disp")
+                    total.textContent = parseInt(total.textContent) + parseInt(cost)
 
-                add_to_table([{ _id: tran_num, description: form_description.value || "desc_" + tran_num, cost: form_cost.value || tran_num }])
+                }
+
 
                 tran_num++
 
@@ -22,12 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(err => {
                 console.log(err)
-                // err = JSON.parse(err.response)
-                console.log(err.responseJSON.cost.message)
                 document.getElementById("error").textContent = "Expense not submitted"
-                if (err.responseJSON && err.responseJSON.cost){
+                if (err.responseJSON && err.responseJSON.cost) {
                     document.getElementById("error").textContent = err.responseJSON.cost.message
-                } else if (err.responseJSON && err.responseJSON.description){
+                } else if (err.responseJSON && err.responseJSON.description) {
                     document.getElementById("error").textContent = err.responseJSON.description.message
                 }
                 tran_num++
@@ -43,8 +62,14 @@ document.addEventListener("DOMContentLoaded", () => {
     function add_to_table(transactions) {
         if (transactions) {
             transactions.forEach((transaction) => {
+                console.log(transaction)
 
-                console.log(`add ${transaction._id}: ${transaction.description} and ${transaction.cost} to table`)
+                const message = `add ${transaction._id}${transaction.idb}: ${transaction.description} and ${transaction.cost} to table`
+
+                document.getElementById("success").textContent = message
+
+                console.log(message)
+
                 var table_row = document.createElement("tr")
                 var col_description = document.createElement("td")
                 var col_cost = document.createElement("td")
@@ -54,6 +79,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 var remove_btn = document.createElement("i")
                 remove_btn.classList += "fas fa-trash"
                 remove_btn.setAttribute("data-id", transaction._id)
+                remove_btn.setAttribute("data-idb", transaction.idb)
+                console.log(remove_btn)
 
                 col_description.append(desc_text)
                 col_cost.append(cost_text)
@@ -69,20 +96,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function add_to_db(description, cost) {
         console.log(`add ${description} and ${cost} to db`)
+
+        const transaction = {
+            description: description,
+            cost: cost
+        }
+
         if (navigator.onLine) {
 
+            // eslint-disable-next-line no-undef
             return $.ajax({
                 method: "POST",
                 url: "/api/add_expense",
-                data: {
-                    description: description,
-                    cost: cost
-                }
+                data: transaction
             })
 
         } else {
             console.log("Add expense to indexedDB")
-            return new Promise(() => { })
+            return new Promise((resolve) => {
+                // eslint-disable-next-line no-undef
+                const sr = save_record(transaction)
+                console.log(sr)
+                resolve(sr)
+            })
         }
 
     }
@@ -111,18 +147,33 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Get transactions from indexDB")
     }
 
-    get_all_transactions()
-        .then((res)=>{
-            console.log("get_all_transactions")
-            return res.json()
-        })
-        .then((transactions) =>{
-            console.log(transactions)
-            add_to_table(transactions)
-        })
-        .catch((err) => {
-            console.log("Could not get transactions")
-            console.log(err)
-        })
+    function update_page(){
+
+        get_all_transactions()
+            .then((res) => {
+                console.log("get_all_transactions")
+                return res.json()
+            })
+            .then((transactions) => {
+                console.log(transactions)
+                add_to_table(transactions)
+                update_total(transactions)
+            })
+            .catch((err) => {
+                console.log("Could not get transactions")
+                console.log(err)
+            })
+    }
+
+    function update_total(transactions) {
+        const total = transactions.reduce((total, t) => {
+            return total + parseInt(t.cost)
+        }, 0)
+
+        document.getElementById("total_disp").textContent = total
+    }
+
+
+    update_page()
 
 })

@@ -9,6 +9,10 @@ const db_queries = {
             description: description,
             cost: cost
         })
+    },
+
+    bulk_add: function(transactions) {
+        return db.expenses.insertMany(transactions)
     }
 }
 

@@ -29,6 +29,19 @@ const api_routes = function (app) {
                 res.status(400).json(err.errors)
             })
     })
+
+    app.post("/api/transaction/bulk", (req, res) =>{
+        db_queries.bulk_add(req.body)
+            .then(result =>{
+                console.log("_____________Bulk Add_________________")
+                console.log(result)
+                res.json(result)
+            })
+            .catch((err) => {
+                console.log(err.errors)
+                res.status(400).json(err.errors)
+            })
+    })
 }
 
 module.exports = api_routes
