@@ -1,0 +1,21 @@
+{
+    "name": "Budget App",
+    "short_name": "Budget",
+    "icons": [
+        {"src": "assets/images/B-icon.png",
+        "sizes": "82x76",
+        "type": "image/png"
+        },
+        {
+            "src": "assets/images/BudgetApp.png",
+            "sizes": "683x191",
+            "type": "image/png"
+        },
+        {
+            "src": "assets/images/favicon.ico",
+            "sizes": "16x16",
+            "type": "image/ico"
+        }
+    ],
+    "theme_color": "#ff393d"
+}

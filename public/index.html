@@ -1,25 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title></title>
+        <title>Budget App</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="Description" content=Use this budget app to track your expenses!">
+        <link href="/fontawesome/css/all.css" rel="stylesheet">
         <link href="assets/css/style.css" rel="stylesheet">
+        <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="./assets/images/favicon.ico" type="image/x-icon" />
     </head>
     <body>
-        <h1>Budget Tracker</h1>
+        <img alt="Budget Tracker" src="assets/images/BudgetApp.png">
         <p>"Track your spending, even when you are offline! (PWA)</p>
         <br>
         <form>
+            <p id="error" class="error"></p>
             <field>
-                <label>Description</label>
-                <input id="form_description">
+                <label>Description
+
+                    <input type="text" id="form_description" required>
+                </label>
             </field>
             <field>
-                <label>Cost</label>
-                <input id="form_cost">
+                <label>Cost
+
+                    <input type="text" id="form_cost" required>
+                </label>
             </field>
-            <button id="form_submit">
+            <button id="form_submit" type="submit">
                 Submit
             </button>
         </form>
@@ -33,6 +42,7 @@
 
             </tbody>
         </table>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="assets/js/index.js"></script>
     </body>
 </html>
