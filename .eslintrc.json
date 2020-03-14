@@ -28,7 +28,8 @@
         ],
         "semi": [
             "error",
-            "never"
-        ]
+            "always"
+        ],
+        "no-console": "off"
     }
 }
