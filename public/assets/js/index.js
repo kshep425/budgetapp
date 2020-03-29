@@ -23,6 +23,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const category = form_category.value;
         const type = event.target.value;
         console.log(description, cost, type, category);
+        if (cost === 0) {
+            document.getElementById("error").textContent = "Please enter a number > 0";
+            tran_num++;
+            return;
+        } else {
+            document.getElementById("error").textContent = "";
+        }
+
         add_to_db(description, cost, type, category)
             .then(res => {
                 if (typeof res === "function"){
@@ -122,6 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
    */
     function add_to_table(transactions) {
         if (transactions) {
+            document.getElementById("table_transactions").textContent = "";
             transactions.forEach((transaction) => {
                 var table_row = document.createElement("tr");
                 var col_description = document.createElement("td");
@@ -147,6 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 table_row.append(col_cost);
                 table_row.append(col_category);
                 table_row.append(col_remove);
+
                 document.getElementById("table_transactions").append(table_row);
 
             });
