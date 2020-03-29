@@ -4,30 +4,44 @@ document.addEventListener("DOMContentLoaded", () => {
     let tran_num = 0;
     let form_description = document.getElementById("form_description");
     let form_cost = document.getElementById("form_cost");
-    let form_submit_button = document.getElementById("form_submit");
+    let form_category = document.getElementById("form_category");
 
-    form_submit_button.addEventListener("click", form_submit);
+    let expense_button = document.getElementById("expense_btn");
+    let income_button = document.getElementById("income_btn");
+    expense_button.addEventListener("click", form_submit);
+    income_button.addEventListener("click", form_submit);
+    console.log(form_category);
 
     async function form_submit(event) {
         event.preventDefault();
+        console.log(event.target.value);
         document.getElementById("error").textContent = "";
         document.getElementById("success").textContent = "";
         console.log("Form submitted");
         const description = form_description.value || "desc_" + tran_num;
-        const cost = parseInt(form_cost.value) || tran_num;
-        console.log(description, cost);
-        add_to_db(description, cost)
+        const cost = parseFloat(form_cost.value) || tran_num;
+        const category = form_category.value;
+        const type = event.target.value;
+        console.log(description, cost, type, category);
+        add_to_db(description, cost, type, category)
             .then(res => {
-                return res.json();
+                if (typeof res === "function"){
+                    return res.json();
+                }
+                else {
+                    return res;
+                }
             })
             .then((res) => {
-                console.log("expense added to db");
+                console.log("transaction added to db");
                 console.log(res);
                 const transaction = [{
                     _id: "",
                     idb: "",
-                    description: description,
-                    cost: cost
+                    description,
+                    cost,
+                    type,
+                    category
                 }];
                 console.log(navigator.onLine);
                 if (navigator.onLine) {
@@ -39,12 +53,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     transaction[0].idb = res;
                     console.log(transaction[0].idb);
                     add_to_table(transaction);
+                    console.log(transaction);
                     let total = document.getElementById("total_disp");
-                    total.textContent = parseInt(total.textContent) + parseInt(cost);
+                    if (transaction[0].type === "expense"){
+                        total.textContent = parseFloat(total.textContent) - parseFloat(transaction[0].cost);
+                    } else {
+                        total.textContent = parseFloat(total.textContent) +  parseFloat(transaction[0].cost);
+                    }
+                    console.log(total.textContent);
 
                 }
 
-                const message = `Added: '${description} $${cost}' `;
+                const message = `Added: '${description} ${(type==="expense") ? "-": ""} $${cost} ${type} ${category}' `;
 
                 document.getElementById("success").textContent = message;
                 tran_num++;
@@ -53,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(err => {
                 console.log(err);
-                document.getElementById("error").textContent = "Expense not submitted";
+                document.getElementById("error").textContent = "Transaction not submitted";
                 if (err.responseJSON && err.responseJSON.cost) {
                     document.getElementById("error").textContent = err.responseJSON.cost.message;
                 } else if (err.responseJSON && err.responseJSON.description) {
@@ -64,17 +84,19 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    function add_to_db(description, cost) {
-        console.log(`add ${description} and ${cost} to db`);
+    function add_to_db(description, cost, type, category) {
+        console.log(`add ${description} ${cost} ${type} and ${category} to db`);
 
         const transaction = {
             description: description,
-            cost: cost
+            cost: cost,
+            type,
+            category
         };
 
         if (navigator.onLine) {
             console.log(transaction);
-            return fetch("/api/add_expense", {
+            return fetch("/api/add_transaction", {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
@@ -84,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
         } else {
-            console.log("Add expense to indexedDB");
+            console.log("Add transaction to indexedDB");
             return new Promise((resolve) => {
                 // eslint-disable-next-line no-undef
                 const sr = save_record(transaction);
@@ -96,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /**
    *
-   * @param {array} result - array of objects containing id, cost, and description
+   * @param {array} result - array of objects containing id, cost, description, and category
    */
     function add_to_table(transactions) {
         if (transactions) {
@@ -104,23 +126,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 var table_row = document.createElement("tr");
                 var col_description = document.createElement("td");
                 var col_cost = document.createElement("td");
+                var col_category = document.createElement("td");
                 var col_remove = document.createElement("td");
                 var desc_text = document.createElement("p").textContent = transaction.description;
-                var cost_text = document.createElement("p").textContent = transaction.cost;
+                var cost_text = document.createElement("p").textContent = `${(transaction.type==="expense") ? "-": ""} ${transaction.cost}`;
+                var category_text = document.createElement("p").textContent = transaction.category;
                 var remove_btn = document.createElement("i");
 
                 remove_btn.classList += "fas fa-trash";
                 remove_btn.setAttribute("data-id", transaction._id);
                 remove_btn.setAttribute("data-idb", transaction.idb);
+                remove_btn.addEventListener("click", remove);
 
                 col_description.append(desc_text);
                 col_cost.append(cost_text);
+                col_category.append(category_text);
                 col_remove.append(remove_btn);
 
                 table_row.append(col_description);
                 table_row.append(col_cost);
+                table_row.append(col_category);
                 table_row.append(col_remove);
-                document.getElementById("table_expenses").append(table_row);
+                document.getElementById("table_transactions").append(table_row);
+
             });
         }
     }
@@ -145,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function get_all_transactions_from_mongodb() {
-        return fetch("/api/expenses");
+        return fetch("/api/transactions");
     }
 
     function get_all_transactions_from_indexedDB() {
@@ -172,12 +200,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function update_total(transactions) {
         const total = transactions.reduce((total, t) => {
-            return total + parseInt(t.cost);
+            if (t.type === "expense"){
+                return parseFloat(total) - parseFloat(t.cost);
+            } else {
+                return parseFloat(total) + parseFloat(t.cost);
+            }
         }, 0);
 
         document.getElementById("total_disp").textContent = total;
     }
 
+    function remove(event){
+        event.preventDefault();
+        console.log(event);
+        console.log(event.target);
+        console.log(event.target.id);
+        remove_item(event.target.id);
+    }
+
+    function remove_item(id) {
+        console.log("Remove Item: " + id);
+    }
 
     update_page();
 

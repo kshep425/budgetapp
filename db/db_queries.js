@@ -1,19 +1,24 @@
-const db = require("../models")
+const db = require("../models");
 const db_queries = {
-    get_expenses: function(){
-        return db.expenses.find()
+    get_transactions: function(){
+        console.log(db);
+        return db.Transaction.find();
     },
 
-    add_expense: function(description, cost){
-        return db.expenses.create({
-            description: description,
-            cost: cost
-        })
+    add_transaction: function(description, cost, type, category){
+        return db.Transaction.create({
+            description,
+            cost,
+            type,
+            category
+        });
     },
 
     bulk_add: function(transactions) {
-        return db.expenses.insertMany(transactions)
+        console.log("bulk add");
+        console.log(transactions);
+        return db.Transaction.insertMany(transactions);
     }
-}
+};
 
-module.exports = db_queries
+module.exports = db_queries;
