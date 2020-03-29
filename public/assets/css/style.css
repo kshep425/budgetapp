@@ -8,5 +8,8 @@ body {
 
 .error {
     color: red
+}
 
+.image-fluid {
+  width: 100%;
 }
