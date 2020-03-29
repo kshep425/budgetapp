@@ -130,7 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
    */
     function add_to_table(transactions) {
         if (transactions) {
-            document.getElementById("table_transactions").textContent = "";
             transactions.forEach((transaction) => {
                 var table_row = document.createElement("tr");
                 var col_description = document.createElement("td");
@@ -157,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 table_row.append(col_category);
                 table_row.append(col_remove);
 
-                document.getElementById("table_transactions").append(table_row);
+                document.getElementById("table_transactions").prepend(table_row);
 
             });
         }
@@ -199,6 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then((transactions) => {
                 console.log(transactions);
+                document.getElementById("table_transactions").textContent = "";
                 add_to_table(transactions);
                 update_total(transactions);
             })
