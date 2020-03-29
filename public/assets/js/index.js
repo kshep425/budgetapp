@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 table_row.append(col_description);
                 table_row.append(col_cost);
                 table_row.append(col_category);
-                table_row.append(col_remove);
+                //table_row.append(col_remove);
 
                 document.getElementById("table_transactions").prepend(table_row);
 
